@@ -1,4 +1,5 @@
 import { Application } from "pixi.js";
+import { MOVE_INTERVAL } from "../constants.js";
 import { checkCollision, getSafeRandomCell } from "../utils.js";
 import { Field } from "./Field.js";
 import { Food } from "./Food.js";
@@ -15,7 +16,7 @@ export class Game {
   score = 0;
   isPlaying = false;
   moveTimer = 0;
-  moveInterval = 150;
+  moveInterval = MOVE_INTERVAL;
 
   constructor(gui) {
     this.gui = gui;
@@ -57,10 +58,15 @@ export class Game {
   }
 
   reset() {
-    this.moveTimer = 0;
+    this.initWalls();
+    this.field.clear();
+    this.field.drawWalls(this.walls);
     this.snake = new Snake();
     this.field.drawSnake(this.snake.body);
     this.gui.resetCurrentScore();
+    this.score = 0;
+    this.moveTimer = 0;
+    this.moveInterval = MOVE_INTERVAL;
   }
 
   gameOver() {
@@ -83,10 +89,11 @@ export class Game {
 
       if (this.checkFoodCollision()) {
         this.snake.grow();
-        this.gui.setScore(this.score++);
+        this.gui.setScore(++this.score);
         const { cols, rows } = this.field;
         this.food.spawn([...this.walls, ...this.snake.body], cols, rows);
         if (this.gamemode === "walls") this.spawnRandomWall();
+        if (this.gamemode === "speed") this.moveInterval *= 0.9;
       }
       this.field.drawSnake(this.snake.body);
       this.field.drawFood(this.food);
@@ -118,6 +125,7 @@ export class Game {
 
   initWalls() {
     const { rows, cols } = this.field;
+    this.walls = [];
 
     for (let x = 0; x < cols; x++) {
       this.walls.push({ x: x, y: 0 });

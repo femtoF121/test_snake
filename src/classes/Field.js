@@ -16,6 +16,11 @@ export class Field {
     this.view.addChild(this.dynamicLayer);
   }
 
+  clear() {
+    this.staticLayer.clear();
+    this.dynamicLayer.clear();
+  }
+
   drawCell(layer, x, y, color, borderColor = null) {
     layer
       .rect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize)
