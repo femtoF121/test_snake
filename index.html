@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+    <title>PixiJS - Template</title>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="wrapper">
+        <div id="game-canvas"></div>
+        <aside class="menu">
+          <h1 class="title">Snake Game</h1>
+          <h3 class="subtitle">Best: <span id="best-score">0</span></h3>
+          <h3 class="subtitle">Score: <span id="current-score">0</span></h3>
+
+          <div id="modes-menu" class="modes">
+            <label>
+              <input type="radio" name="gameMode" value="classic" checked />
+              Classic
+            </label>
+            <label>
+              <input type="radio" name="gameMode" value="god" />
+              God Mode
+            </label>
+            <label>
+              <input type="radio" name="gameMode" value="walls" />
+              Walls
+            </label>
+            <label>
+              <input type="radio" name="gameMode" value="portal" />
+              Portal
+            </label>
+            <label>
+              <input type="radio" name="gameMode" value="speed" />
+              Speed
+            </label>
+          </div>
+
+          <div class="buttons-group">
+            <button id="btn-play">Play</button>
+            <button id="btn-exit">Exit</button>
+            <button id="btn-menu" class="hidden">Menu</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
