@@ -43,6 +43,8 @@ export class Field {
   }
 
   drawFood(food) {
-    this.drawCell(this.dynamicLayer, food.x, food.y, "#e91e63", "#c2185b");
+    food.forEach((f) =>
+      this.drawCell(this.dynamicLayer, f.x, f.y, "#e91e63", "#c2185b"),
+    );
   }
 }

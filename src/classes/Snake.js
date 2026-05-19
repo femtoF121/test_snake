@@ -54,17 +54,27 @@ export class Snake {
     window.removeEventListener("keydown", this.handleKeyDown);
   }
 
-  move() {
+  move(teleportX = 0, teleportY = 0) {
     if (this.directionQueue.length > 0) {
       this.direction = this.directionQueue.shift();
     }
 
     const head = this.body[0];
     this.body.unshift({
-      x: head.x + this.direction.x,
-      y: head.y + this.direction.y,
+      x: head.x + this.direction.x + teleportX,
+      y: head.y + this.direction.y + teleportY,
     });
     this.body.pop();
+  }
+
+  fieldWrap(cols, rows) {
+    const head = this.body[0];
+
+    if (head.x <= 0) head.x = cols - 2;
+    else if (head.x >= cols - 1) head.x = 1;
+
+    if (head.y <= 0) head.y = rows - 2;
+    else if (head.y >= rows - 1) head.y = 1;
   }
 
   grow() {

@@ -10,6 +10,7 @@ export class Game {
   field = new Field();
   snake = new Snake();
   food = new Food();
+  foods = [];
   walls = [];
 
   gamemode;
@@ -49,7 +50,7 @@ export class Game {
     this.isPlaying = true;
     this.snake.initControls();
     const { cols, rows } = this.field;
-    this.food.spawn([...this.walls, ...this.snake.body], cols, rows);
+    this.spawnFoods();
   }
 
   stop() {
@@ -85,18 +86,31 @@ export class Game {
       this.moveTimer = 0;
       this.snake.move();
 
-      if (this.checkDeadCollision()) return this.gameOver();
+      if (this.gamemode === "god") {
+        this.snake.fieldWrap(this.field.cols, this.field.rows);
+      } else if (this.checkDeadCollision()) return this.gameOver();
 
       if (this.checkFoodCollision()) {
+        const enterIndex = this.foods.findIndex(
+          (f) => f.x === this.snake.body[0].x && f.y === this.snake.body[0].y,
+        );
+        const exitIndex = (enterIndex + 1) % 2;
         this.snake.grow();
         this.gui.setScore(++this.score);
-        const { cols, rows } = this.field;
-        this.food.spawn([...this.walls, ...this.snake.body], cols, rows);
+
+        if (this.gamemode === "portal")
+          this.snake.move(
+            this.foods[exitIndex].x - this.foods[enterIndex].x,
+            this.foods[exitIndex].y - this.foods[enterIndex].y,
+          );
         if (this.gamemode === "walls") this.spawnRandomWall();
         if (this.gamemode === "speed") this.moveInterval *= 0.9;
+
+        const { cols, rows } = this.field;
+        this.spawnFoods();
       }
       this.field.drawSnake(this.snake.body);
-      this.field.drawFood(this.food);
+      this.field.drawFood(this.foods);
     }
   }
 
@@ -109,7 +123,7 @@ export class Game {
   }
 
   checkFoodCollision() {
-    return checkCollision([this.food], this.snake.body[0]);
+    return checkCollision(this.foods, this.snake.body[0]);
   }
 
   spawnRandomWall() {
@@ -121,6 +135,22 @@ export class Game {
     if (!safeCell) return;
     this.walls.push({ x: safeCell.x, y: safeCell.y });
     this.field.drawWalls(this.walls);
+  }
+
+  spawnFoods() {
+    this.foods = [];
+
+    const foodCount = this.gamemode === "portal" ? 2 : 1;
+
+    for (let i = 0; i < foodCount; i++) {
+      const food = new Food();
+      food.spawn(
+        [...this.walls, ...this.snake.body],
+        this.field.cols,
+        this.field.rows,
+      );
+      this.foods.push(food);
+    }
   }
 
   initWalls() {
