@@ -43,7 +43,7 @@ export class GUI {
     );
   }
 
-  updateScore(current) {
+  setScore(current) {
     if (this.elements.currentScore)
       this.elements.currentScore.textContent = current;
 

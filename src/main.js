@@ -11,5 +11,6 @@ game.init().then(() => {
 
   gui.onMenu = () => {
     game.stop();
+    game.reset();
   };
 });
