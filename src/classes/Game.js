@@ -1,5 +1,5 @@
 import { Application } from "pixi.js";
-import { checkCollision } from "../utils.js";
+import { checkCollision, getSafeRandomCell } from "../utils.js";
 import { Field } from "./Field.js";
 import { Food } from "./Food.js";
 import { Snake } from "./Snake.js";
@@ -11,6 +11,7 @@ export class Game {
   food = new Food();
   walls = [];
 
+  gamemode;
   score = 0;
   isPlaying = false;
   moveTimer = 0;
@@ -43,6 +44,7 @@ export class Game {
   }
 
   start(mode) {
+    this.gamemode = mode;
     this.isPlaying = true;
     this.snake.initControls();
     const { cols, rows } = this.field;
@@ -84,6 +86,7 @@ export class Game {
         this.gui.setScore(this.score++);
         const { cols, rows } = this.field;
         this.food.spawn([...this.walls, ...this.snake.body], cols, rows);
+        if (this.gamemode === "walls") this.spawnRandomWall();
       }
       this.field.drawSnake(this.snake.body);
       this.field.drawFood(this.food);
@@ -102,8 +105,14 @@ export class Game {
     return checkCollision([this.food], this.snake.body[0]);
   }
 
-  addWall(x, y) {
-    this.walls.push({ x, y });
+  spawnRandomWall() {
+    const safeCell = getSafeRandomCell(
+      [...this.walls, ...this.snake.body],
+      this.field.cols,
+      this.field.rows,
+    );
+    if (!safeCell) return;
+    this.walls.push({ x: safeCell.x, y: safeCell.y });
     this.field.drawWalls(this.walls);
   }
 
