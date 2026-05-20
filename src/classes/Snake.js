@@ -2,12 +2,18 @@ export class Snake {
   direction = { x: 1, y: 0 };
   directionQueue = [];
 
-  constructor(startX = 10, startY = 10) {
+  constructor(startX, startY) {
+    this.reset(startX, startY);
+  }
+
+  reset(startX = 10, startY = 10) {
     this.body = [
       { x: startX, y: startY },
       { x: startX - 1, y: startY },
       { x: startX - 2, y: startY },
     ];
+    this.direction = { x: 1, y: 0 };
+    this.directionQueue = [];
   }
 
   handleKeyDown = (event) => {

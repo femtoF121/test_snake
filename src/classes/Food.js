@@ -4,7 +4,7 @@ export class Food {
   x = 0;
   y = 0;
 
-  spawn(unsafeCells, cols, rows) {
+  newCoords(unsafeCells, cols, rows) {
     const safeCell = getSafeRandomCell(unsafeCells, rows, cols);
 
     if (!safeCell) return alert("You win!");

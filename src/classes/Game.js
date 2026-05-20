@@ -9,7 +9,6 @@ export class Game {
   app = new Application();
   field = new Field();
   snake = new Snake();
-  food = new Food();
   foods = [];
   walls = [];
 
@@ -49,7 +48,6 @@ export class Game {
     this.gamemode = mode;
     this.isPlaying = true;
     this.snake.initControls();
-    const { cols, rows } = this.field;
     this.spawnFoods();
   }
 
@@ -59,10 +57,10 @@ export class Game {
   }
 
   reset() {
-    this.initWalls();
     this.field.clear();
+    this.initWalls();
     this.field.drawWalls(this.walls);
-    this.snake = new Snake();
+    this.snake.reset();
     this.field.drawSnake(this.snake.body);
     this.gui.resetCurrentScore();
     this.score = 0;
@@ -106,7 +104,6 @@ export class Game {
         if (this.gamemode === "walls") this.spawnRandomWall();
         if (this.gamemode === "speed") this.moveInterval *= 0.9;
 
-        const { cols, rows } = this.field;
         this.spawnFoods();
       }
       this.field.drawSnake(this.snake.body);
@@ -132,24 +129,23 @@ export class Game {
       this.field.cols,
       this.field.rows,
     );
-    if (!safeCell) return;
+    if (!safeCell) return alert("You win!");
     this.walls.push({ x: safeCell.x, y: safeCell.y });
     this.field.drawWalls(this.walls);
   }
 
   spawnFoods() {
     this.foods = [];
-
     const foodCount = this.gamemode === "portal" ? 2 : 1;
+    const food = new Food();
 
     for (let i = 0; i < foodCount; i++) {
-      const food = new Food();
-      food.spawn(
+      food.newCoords(
         [...this.walls, ...this.snake.body],
         this.field.cols,
         this.field.rows,
       );
-      this.foods.push(food);
+      this.foods.push({ ...food });
     }
   }
 
